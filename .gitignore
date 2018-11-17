@@ -1,0 +1,5 @@
+.pytest_cache/
+.vscode/
+*egg-info*
+*__pycache__*
+var/scratch
