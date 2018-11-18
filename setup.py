@@ -12,6 +12,8 @@ setup(name='midinet',
           'tqdm',
           'mido',
           'docopt',
+          'keras==2.2.4',
+          'tensorflow==1.12.0',
       ],
       scripts=[
           'bin/midinet',
