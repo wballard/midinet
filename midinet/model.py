@@ -11,8 +11,8 @@ import mido
 from keras.layers import GRU, BatchNormalization, Dense, Reshape
 from keras.models import Sequential, load_model
 
-from codec import Encoder
-from sequences import SemiRedundantSequences
+from midinet import codec
+from midinet import sequences
 
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
@@ -37,10 +37,10 @@ class MIDISequencifier:
         '''
 
         self.midifile = midifile
-        self.channels = Encoder(self.midifile).numpy()
+        self.channels = codec.Encoder(self.midifile).numpy()
 
         # encode the channels into input / output pairs
-        seq = SemiRedundantSequences()
+        seq = sequences.SemiRedundantSequences()
         self.inputs_and_outputs = list(map(seq.transform, self.channels))
 
         # there is a model for each channel, but they are similarly built
@@ -64,7 +64,8 @@ class MIDISequencifier:
         self.models = list(map(build, self.inputs_and_outputs))
 
     def train(self, epochs=1, batch_size=16):
-        for model, (inputs, outputs) in zip(self.models, self.inputs_and_outputs):
+        for i, (model, (inputs, outputs)) in enumerate(zip(self.models, self.inputs_and_outputs)):
+            print('Channel {0}'.format(i))
             model.fit(inputs, outputs, epochs=epochs, batch_size=batch_size)
 
 

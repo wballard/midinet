@@ -1,3 +1,28 @@
 #!/usr/bin/env python
+'''midinet - generate new songs with machine learning based on a source midi.
+
+Usage:
+    midinet train SOURCE_MIDI_FILENAME MODEL_DIRECTORY [--epochs=N]
+    midinet generate MODEL_DIRECTORY GENERATE_MIDI_FILENAME
+
+Options:
+    --epochs=N      trainig epoch [default: 16]
+'''
+
+import os
+
+import docopt
+import mido
 
 import midinet
+
+if __name__ == '__main__':
+    arguments = docopt.docopt(__doc__, version=midinet.__version__)
+    print(arguments)
+
+
+    if arguments['train']:
+        midifile = mido.MidiFile(arguments['SOURCE_MIDI_FILENAME'])
+        model = midinet.MIDISequencifier(midifile)
+        model.train(epochs=int(arguments['--epochs']))
+        model.save(arguments['MODEL_DIRECTORY'])
