@@ -101,7 +101,7 @@ class MIDISequencifier:
         for i, model in enumerate(self.models):
             model.save(str(directory / Path('{:0>2d}.keras'.format(i))))
         # and the source midi
-        self.midifile.save(directory / Path('source.midi'))
+        self.midifile.save(str(directory / Path('source.midi')))
 
     def generate(self, target_midi_filename, length=500):
         '''[summary]
