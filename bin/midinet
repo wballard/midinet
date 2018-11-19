@@ -2,13 +2,14 @@
 '''midinet - generate new songs with machine learning based on a source midi.
 
 Usage:
-    midinet train SOURCE_MIDI_FILENAME MODEL_DIRECTORY [--epochs=N] [--units=U]
+    midinet train SOURCE_MIDI_FILENAME MODEL_DIRECTORY [--epochs=N] [--units=U] [--window=W]
     midinet generate MODEL_DIRECTORY GENERATE_MIDI_FILENAME [--length=N]
 
 Options:
     --units=U       number of hidden units[default: 256]
     --epochs=N      training epochs [default: 64]
     --length=L      generation length [default: 256]
+    --window=W      window length for training [default: 16]
 '''
 
 import os
@@ -23,7 +24,10 @@ if __name__ == '__main__':
 
     if arguments['train']:
         midifile = mido.MidiFile(arguments['SOURCE_MIDI_FILENAME'])
-        model = midinet.MIDISequencifier(midifile)
+        model = midinet.MIDISequencifier(
+            midifile,
+            hidden_units=int(arguments['--units']),
+            sequence_length=int(arguments['--window']))
         model.train(epochs=int(arguments['--epochs']))
         model.save(arguments['MODEL_DIRECTORY'])
 

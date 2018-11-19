@@ -16,6 +16,9 @@ class Encoder:
     (3, 252, 32)
     >>> enc.numpy().dtype
     dtype('uint8')
+    >>> enc = Encoder(mido.MidiFile("var/data/BRAND1.mid"))
+    >>> enc.numpy().shape
+    (12, 6328, 32)
     '''
 
     def __init__(self, midifile):
@@ -49,6 +52,9 @@ class Encoder:
                     # packing into a single bit pattern
                     one_hot = np.concatenate([tone, timing])
                     buffer.append(one_hot)
+            # final pad of zeros, this allows us to handle empty tracks
+            if len(buffer) == 0:
+                buffer.append(np.zeros(32, dtype=np.uint8))
             track_buffer.append(np.vstack(buffer))
         # this needs to be rectangular, not ragged, so we will be padding
         max_length = max([len(buffer) for buffer in track_buffer])
