@@ -145,7 +145,7 @@ class MIDISequencifier:
         '''
         directory = Path(model_file_path)
         if directory.exists() and directory.is_dir():
-            midifile = mido.MidiFile(directory / Path('source.midi'))
+            midifile = mido.MidiFile(str(directory / Path('source.midi')))
             models = []
             for model_file in sorted(directory.glob('*.keras')):
                 models.append(load_model(str(model_file)))
