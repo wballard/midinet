@@ -20,11 +20,11 @@ class Encoder:
 
     def __init__(self, midifile):
         '''
-        
+
         Arguments:
             midifile {mido.MidiFile} -- file object containing midi
         '''
-        self.midifile = midifile 
+        self.midifile = midifile
 
     def numpy(self):
         '''Numpy encoding of the MIDI content.
@@ -42,7 +42,8 @@ class Encoder:
             for msg in track:
                 if msg.type in ['note_on', 'note_off']:
                     # max timing length of 255 for a single byte of timing
-                    timing = (np.unpackbits(bytearray(bytes([min(msg.time, 255)]))))
+                    timing = (np.unpackbits(
+                        bytearray(bytes([min(msg.time, 255)]))))
                     # mido can render bytes for the core MIDI Message that is the note and channel and velocity
                     tone = (np.unpackbits(msg.bin()))
                     # packing into a single bit pattern
@@ -53,7 +54,8 @@ class Encoder:
         max_length = max([len(buffer) for buffer in track_buffer])
         padded_buffers = []
         for buffer in track_buffer:
-            padded_buffer = np.pad(buffer, ((0, max_length-len(buffer)), (0, 0)), 'constant', constant_values=0)
+            padded_buffer = np.pad(
+                buffer, ((0, max_length-len(buffer)), (0, 0)), 'constant', constant_values=0)
             padded_buffers.append(padded_buffer)
         return np.stack(padded_buffers, axis=0)
 
@@ -70,7 +72,7 @@ class Decoder:
 
     def __init__(self, miditensor):
         '''
-        
+
         Arguments:
             miditensor {numpy.ndarray} -- MIDI encoded with {Encoder}
         '''
@@ -78,15 +80,16 @@ class Decoder:
 
     def midi(self, ticks_per_beat=128):
         '''Transforms the encoded midi tensor into a file object which can then be saved.
-        
+
         Arguments:
             ticks_per_beat {int} -- controls the tempo of the playback, higher is faster
-        
+
         Returns:
             {mido.MidiFile} representation.
         '''
         # first -- round and decode the message bits
-        as_bytes = np.packbits(np.around(self.miditensor), axis=2)
+        as_bytes = np.packbits(
+            np.round(self.miditensor).astype(np.bool), axis=2)
         # now the actual file build, nothing really special here
         midifile = mido.MidiFile()
         midifile.ticks_per_beat = ticks_per_beat

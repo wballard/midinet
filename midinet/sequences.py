@@ -4,6 +4,7 @@ Sequences need to be transformed into input / output prediction pairings.
 
 import numpy as np
 
+
 class SemiRedundantSequences:
     '''Given a tensor that is [timestep, ...] cut it into two tensors, input and output.
     Each pair is an input [sample, timestep, ...] .. [sample, timestep + n, ...] to 
@@ -19,9 +20,10 @@ class SemiRedundantSequences:
     >>> s.transform(np.zeros((5,5)))[1].shape
     (3, 5)
     '''
+
     def __init__(self, max_len=16, step=1):
         '''[summary]
-        
+
         Keyword Arguments:
             max_len {int} -- maximum lenght of a single input (default: {16})
             step {int} -- sliding window to step across the time series (default: {1})
@@ -32,10 +34,10 @@ class SemiRedundantSequences:
 
     def transform(self, sequence_tensor):
         '''Turns an input tensor into the (input, output) tensor tuple.
-        
+
         Arguments:
             sequence_tensor {np.array} -- time series data tensor
-        
+
         Returns:
             tuple -- (input, output) tensor pairs
         '''
